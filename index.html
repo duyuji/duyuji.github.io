@@ -1,16 +1,111 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
-  <head>
-    <!-- Required meta tags -->
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<html lang="en" >
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Angular Material style sheet -->
+  <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/angular_material/1.1.0/angular-material.min.css">
+</head>
+<body ng-app="App" ng-cloak>
 
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous">
-  </head>
-  <body>
-    <h1>Hello, world!</h1>
+<div ng-controller="AppCtrl" layout="column" ng-cloak>
+  <section layout="row" flex>
 
-     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.5/angular.min.js"></script>
-  </body>
+    <md-sidenav
+        class="md-sidenav-left"
+        md-component-id="left"
+        md-is-locked-open="$mdMedia('gt-md')"
+        md-whiteframe="4">
+
+      <md-toolbar class="md-theme-indigo">
+        <h1 class="md-toolbar-tools">Sidenav Left</h1>
+      </md-toolbar>
+      <md-content layout-padding ng-controller="LeftCtrl">
+        <md-button ng-click="close()" class="md-primary" hide-gt-md>
+          Close Sidenav Left
+        </md-button>
+        <p hide show-gt-md>
+          Hello World
+        </p>
+      </md-content>
+
+    </md-sidenav>
+  </section>
+
+</div>
+
+  
+  <!-- Angular Material requires Angular.js Libraries -->
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-animate.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-aria.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-messages.min.js"></script>
+
+  <!-- Angular Material Library -->
+  <script src="https://ajax.googleapis.com/ajax/libs/angular_material/1.1.0/angular-material.min.js"></script>
+  
+  <!-- Your application bootstrap  -->
+  <script type="text/javascript">    
+    /**
+     * You must include the dependency on 'ngMaterial' 
+     */
+    var app = angular.module('App', ['ngMaterial']);
+  	app.controller('AppCtrl', function ($scope, $timeout, $mdSidenav, $log) {
+    	$scope.toggleLeft = buildDelayedToggler('left');
+
+	    /**
+	     * Supplies a function that will continue to operate until the
+	     * time is up.
+	     */
+	    function debounce(func, wait, context) {
+	      var timer;
+
+	      return function debounced() {
+	        var context = $scope,
+	            args = Array.prototype.slice.call(arguments);
+	        $timeout.cancel(timer);
+	        timer = $timeout(function() {
+	          timer = undefined;
+	          func.apply(context, args);
+	        }, wait || 10);
+	      };
+	    }
+
+	    /**
+	     * Build handler to open/close a SideNav; when animation finishes
+	     * report completion in console
+	     */
+	    function buildDelayedToggler(navID) {
+	      return debounce(function() {
+	        // Component lookup should always be available since we are not using `ng-if`
+	        $mdSidenav(navID)
+	          .toggle()
+	          .then(function () {
+	            $log.debug("toggle " + navID + " is done");
+	          });
+	      }, 200);
+	    }
+
+	    function buildToggler(navID) {
+	      return function() {
+	        // Component lookup should always be available since we are not using `ng-if`
+	        $mdSidenav(navID)
+	          .toggle()
+	          .then(function () {
+	            $log.debug("toggle " + navID + " is done");
+	          });
+	      };
+	    }
+  	})
+  	.controller('LeftCtrl', function ($scope, $timeout, $mdSidenav, $log) {
+    	$scope.close = function () {
+      		// Component lookup should always be available since we are not using `ng-if`
+      		$mdSidenav('left').close()
+        	.then(function () {
+          	$log.debug("close LEFT is done");
+        });
+
+    };
+  });
+  </script>
+  
+</body>
 </html>
